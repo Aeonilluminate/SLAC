@@ -104,7 +104,7 @@ class Random_Shift:
 
 
 class Random_Patch:
-    def __init__(self, max_num_patch: int=10, var_num_patch: bool=True, x_patch_ratio: float=0.2, y_patch_ratio: float=0.2,
+    def __init__(self, max_num_patch: int=20, var_num_patch: bool=True, x_patch_ratio: float=0.05, y_patch_ratio: float=0.15,
                  x_patch_var: bool=True, y_patch_var: bool=True):
         self.max_num_patch = max_num_patch
         self.var_num_patch = var_num_patch
@@ -120,7 +120,7 @@ class Random_Patch:
         mask = np.ones_like(image)
 
         if self.var_num_patch:
-            num_patch = random.randint(1, self.max_num_patch)
+            num_patch = random.randint(int(self.max_num_patch/3), self.max_num_patch)
         else:
             num_patch = self.max_num_patch
 
@@ -149,3 +149,7 @@ class Random_Patch:
         patched_image = image * mask
 
         return patched_image, helper
+    
+
+class Grid_Patch:
+    pass
