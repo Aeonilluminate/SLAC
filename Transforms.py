@@ -54,7 +54,7 @@ class V_Reflect:
 
 
 class Random_Shift:
-    def __init__(self, y_shift_ratio_max=0.1, x_shift_ratio_max=0.1):
+    def __init__(self, y_shift_ratio_max=0.25, x_shift_ratio_max=0.25):
         self.y_shift_ratio_max = y_shift_ratio_max
         self.x_shift_ratio_max = x_shift_ratio_max
 
