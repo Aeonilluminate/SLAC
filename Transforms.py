@@ -1,9 +1,7 @@
 import numpy as np
 import random
-import math
 from scipy.ndimage import rotate
-import matplotlib.pyplot as plt
-from typing import Union as U
+import Utility_Functions as UF
 
 
 
@@ -56,7 +54,7 @@ class V_Reflect:
 
 
 class Random_Shift:
-    def __init__(self, y_shift_ratio_max=0.1, x_shift_ratio_max=0.1):
+    def __init__(self, y_shift_ratio_max=0.25, x_shift_ratio_max=0.25):
         self.y_shift_ratio_max = y_shift_ratio_max
         self.x_shift_ratio_max = x_shift_ratio_max
 
@@ -151,5 +149,32 @@ class Random_Patch:
         return patched_image, helper
     
 
-class Grid_Patch:
-    pass
+class Random_Noise:
+    def __init__(self, max_num_lines=20, max_num_speckles=100, max_line_len_ratio=0.05, line_len_var=True):
+        self.max_num_lines = max_num_lines
+        self.max_num_speckles = max_num_speckles
+        self.len_upper = max_line_len_ratio
+        self.line_len_var = line_len_var
+
+    def __call__(self, image, helper):
+        num_lines    = random.randint(int(self.max_num_lines/3), self.max_num_lines)
+        num_speckles = random.randint(int(self.max_num_speckles/3), self.max_num_speckles)
+        w = image.shape[1]
+        h = image.shape[0]
+        d = max(w, h)
+        bounding_len = self.len_upper*d
+        for _ in range(num_lines):
+            x1, y1 = np.random.randint(0, w - bounding_len), np.random.randint(0, h - bounding_len)
+            x2 = np.random.randint(x1 + 1, int(x1 + bounding_len))
+            y2_range = np.sqrt(bounding_len ** 2 - (x2 - x1) **2)
+            y2 = np.random.randint(y1 + 1, y1 + y2_range)
+            points = UF.bresenham_line(x1, y1, x2, y2)
+            for (x, y) in points:
+                if 0<= x < w and 0 <= y < h:
+                    image[y, x] = 1
+        
+        for _ in range(num_speckles):
+            x, y = np.random.randint(0, w), np.random.randint(0, h)
+            image[y, x] = 1
+
+        return image, helper
